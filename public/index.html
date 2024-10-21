@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="index.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Calling</title>
+</head>
+<body>
+<div class="container">
+    <div id="userId"></div>
+    <div class="remote-video">
+        <video id="remoteVideo" playsinline autoplay></video>
+    </div>
+    <div class="local-video">
+        <video id="localVideo" playsinline autoplay muted></video>
+    </div>
+
+    <div>
+        <div>Users:</div>
+        <div id="usersList">
+            No users connected
+        </div>
+    </div>
+
+    <div id="call-container">
+        <div id="call">Call</div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
+<script src="index.js"></script>
+</body>
+</html>
