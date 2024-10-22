@@ -28,6 +28,7 @@ body {
 
 #call-container {
   text-align: center;
+  margin-bottom: 10px; /* Adds spacing below the call button */
 }
 
 #call {
@@ -69,20 +70,24 @@ body {
 
 .remote-video {
   display: flex;
-  flex: 1; /* Take all remaining space */
+  flex: 1;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%; /* Ensure container stretches to full height */
+  height: 80vh; /* Reduces height slightly to leave room for other elements */
   padding: 20px 0;
 }
 
 #remoteVideo {
   width: 100%;
-  height: 100%; /* Ensure video takes full height */
-  max-height: 100%; /* Prevent overflow */
+  height: 100%;
+  max-height: 100%;
   border-radius: 10px;
-  object-fit: cover; /* Ensures the video covers the area */
+  object-fit: cover;
+}
+
+#localVideo, #remoteVideo {
+  transform: scaleX(1); /* Correct any horizontal inversion */
 }
 
 .users-section {
@@ -118,7 +123,8 @@ body {
 }
 
 #userId {
-  display: none;
+  display: block;
+  margin-bottom: 10px; /* Ensure there's space between this and the call text */
 }
 
 /* Mobile and tablets (up to 720px) */
@@ -129,19 +135,22 @@ body {
     right: 10px;
     bottom: 10px;
   }
-
-  #call-container {
+  #call-container{
     text-align: left;
+  }
+    
+  #call-container, .users-div{
+    margin-bottom: 30px;
   }
 
   .remote-video {
-    height: 100vh; /* Force container to fill the screen height */
+    height: 75vh; /* Reduce to make room for user ID and call button */
   }
 
   #remoteVideo {
-    height: 100%; /* Ensure video takes full height */
+    height: 100%;
     width: 100%;
-    object-fit: contain; /* Ensures video covers the container without stretching */
+    object-fit: contain; 
   }
 
   #call {
@@ -157,8 +166,8 @@ body {
   }
 
   #remoteVideo {
-    width: 90%; /* Almost fills the screen */
-    height: auto; /* Adjusts with aspect ratio */
+    width: 90%; 
+    height: auto;
     object-fit: contain;
   }
 }
