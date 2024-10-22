@@ -8,7 +8,7 @@ const peer = new RTCPeerConnection({
 });
 
 // Connecting to socket
-const socket = io('https://video-call-app-ssgr.onrender.com');
+const socket = io('https://video-call-app-ciwe.onrender.com');
 
 const onSocketConnected = async () => {
   const constraints = {
