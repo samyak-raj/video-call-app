@@ -86,9 +86,6 @@ body {
   object-fit: cover;
 }
 
-#localVideo, #remoteVideo {
-  transform: scaleX(1); /* Correct any horizontal inversion */
-}
 
 .users-section {
   margin-top: 10px;
