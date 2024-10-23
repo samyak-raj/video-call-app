@@ -1,4 +1,3 @@
-// Creating the peer
 const peer = new RTCPeerConnection({
   iceServers: [
     {
@@ -10,15 +9,35 @@ const peer = new RTCPeerConnection({
 // Connecting to socket
 const socket = io('https://video-call-app-ciwe.onrender.com');
 
+// Track current stream and camera mode
+let currentStream;
+let facingMode = 'user'; // 'user' for front camera, 'environment' for back camera
+let selectedUser;
+
 const onSocketConnected = async () => {
   const constraints = {
     audio: true,
-    video: true
+    video: { facingMode: facingMode }
   };
-  const stream = await navigator.mediaDevices.getUserMedia(constraints);
-  document.querySelector('#localVideo').srcObject = stream;
-  stream.getTracks().forEach(track => peer.addTrack(track, stream));
-}
+  
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    currentStream = stream;
+    const localVideo = document.querySelector('#localVideo');
+    localVideo.srcObject = stream;
+    
+    // Set initial mirroring based on starting camera mode
+    if (facingMode === 'user') {
+      localVideo.style.transform = 'scaleX(-1)';
+    } else {
+      localVideo.style.transform = 'scaleX(1)';
+    }
+    
+    stream.getTracks().forEach(track => peer.addTrack(track, stream));
+  } catch (error) {
+    console.error('Error accessing media devices:', error);
+  }
+};
 
 let callButton = document.querySelector('#call');
 
@@ -29,6 +48,64 @@ callButton.addEventListener('click', async () => {
   
   sendMediaOffer(localPeerOffer);
 });
+
+// Flip camera functionality
+const flipCamera = async () => {
+  try {
+    if (currentStream) {
+      currentStream.getTracks().forEach(track => track.stop());
+    }
+
+    // Toggle facingMode
+    facingMode = facingMode === 'user' ? 'environment' : 'user';
+
+    // Update video mirroring based on camera mode
+    const localVideo = document.querySelector('#localVideo');
+    if (facingMode === 'user') {
+      localVideo.style.transform = 'scaleX(-1)';
+    } else {
+      localVideo.style.transform = 'scaleX(1)';
+    }
+
+    const constraints = {
+      audio: true,
+      video: { facingMode: facingMode }
+    };
+
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    currentStream = stream;
+    
+    localVideo.srcObject = stream;
+
+    // Remove old tracks from peer connection
+    const senders = peer.getSenders();
+    senders.forEach(sender => {
+      if (sender.track.kind === 'video') {
+        peer.removeTrack(sender);
+      }
+    });
+
+    // Add new track to peer connection
+    const videoTrack = stream.getVideoTracks()[0];
+    peer.addTrack(videoTrack, stream);
+
+    // Renegotiate the connection if we're in a call
+    if (selectedUser) {
+      const localPeerOffer = await peer.createOffer();
+      await peer.setLocalDescription(new RTCSessionDescription(localPeerOffer));
+      
+      socket.emit('mediaOffer', {
+        offer: localPeerOffer,
+        from: socket.id,
+        to: selectedUser
+      });
+    }
+
+  } catch (error) {
+    console.error('Error switching camera:', error);
+    facingMode = facingMode === 'user' ? 'environment' : 'user';
+  }
+};
 
 // Create media offer
 socket.on('mediaOffer', async (data) => {
@@ -63,7 +140,7 @@ peer.addEventListener('track', (event) => {
   document.querySelector('#remoteVideo').srcObject = stream;
 })
 
-let selectedUser;
+
 
 const sendMediaAnswer = (peerAnswer, data) => {
   socket.emit('mediaAnswer', {
@@ -109,7 +186,29 @@ const onUpdateUserList = ({ userIds }) => {
     usersList.appendChild(userItem);
   });
 };
+
 socket.on('update-user-list', onUpdateUserList);
+
+// Initialize flip camera button
+document.addEventListener('DOMContentLoaded', () => {
+  const flipBtn = document.querySelector('#flip-camera-btn');
+  
+  // Only show flip button if device has multiple cameras
+  if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+    navigator.mediaDevices.enumerateDevices()
+      .then(devices => {
+        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+        if (videoDevices.length <= 1) {
+          flipBtn.style.display = 'none';
+        }
+      })
+      .catch(err => {
+        console.error('Error enumerating devices:', err);
+      });
+  }
+
+  flipBtn.addEventListener('click', flipCamera);
+});
 
 const handleSocketConnected = async () => {
   onSocketConnected();
