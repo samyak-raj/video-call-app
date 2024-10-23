@@ -3,7 +3,7 @@ html,
 body {
   height: 100%;
   margin: 0;
-  overflow: hidden; /* No scrolling */
+  overflow: -moz-hidden-unscrollable; /* No scrolling */
 }
 body {
   background-color: #121212;
@@ -83,18 +83,13 @@ body {
   height: 100%;
   max-height: 100%;
   border-radius: 10px;
-  object-fit: cover;
 }
 
-
-.users-section {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #1e1e1e;
-  border-radius: 5px;
-  border: 1px solid rgb(110, 42, 255);
-  text-align: center;
+#localVideo,
+#remoteVideo {
+  transform: scaleX(-1); /* Correct any horizontal inversion */
 }
+
 
 .user-item {
   display: inline-flex;
@@ -132,22 +127,23 @@ body {
     right: 10px;
     bottom: 10px;
   }
-  #call-container{
+  #call-container {
     text-align: left;
   }
-    
-  #call-container, .users-div{
+
+  #call-container,
+  .users-div {
     margin-bottom: 30px;
   }
 
   .remote-video {
-    height: 75vh; /* Reduce to make room for user ID and call button */
+    height: 85vh; /* Reduce to make room for user ID and call button */
   }
 
   #remoteVideo {
     height: 100%;
     width: 100%;
-    object-fit: contain; 
+    object-fit: contain;
   }
 
   #call {
@@ -159,11 +155,11 @@ body {
 @media (min-width: 721px) {
   .local-video {
     width: 150px;
-    height: 100vh;
+    height: auto;
   }
 
   #remoteVideo {
-    width: 90%; 
+    width: 90%;
     height: auto;
     object-fit: contain;
   }
