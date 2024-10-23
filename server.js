@@ -20,7 +20,7 @@ app.get('/health', (req, res) => {
   res.status(200).send('Server is running');
 });
 
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, './public')));
 
 // Track connected users
 let connectedUsers = [];
