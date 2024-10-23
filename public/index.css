@@ -1,10 +1,10 @@
-/* General reset for full height */
 html,
 body {
   height: 100%;
   margin: 0;
-  overflow: -moz-hidden-unscrollable; /* No scrolling */
+  overflow: -moz-hidden-unscrollable;
 }
+
 body {
   background-color: #121212;
   color: #ffffff;
@@ -18,8 +18,8 @@ body {
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Spacing between elements */
-  height: 100vh; /* Full height of the viewport */
+  justify-content: space-between;
+  height: 100vh;
   max-width: 1200px;
   width: 100%;
   padding: 10px;
@@ -28,7 +28,7 @@ body {
 
 #call-container {
   text-align: center;
-  margin-bottom: 10px; /* Adds spacing below the call button */
+  margin-bottom: 10px;
 }
 
 #call {
@@ -44,6 +44,7 @@ body {
   border-radius: 5px;
   margin-top: 10px;
   color: white;
+  border: none;
 }
 
 #call:hover {
@@ -52,6 +53,24 @@ body {
     rgb(110, 42, 255) 0%,
     rgb(148, 98, 255) 100%
   );
+}
+
+#flip-camera-btn {
+  position: absolute;
+  bottom: 110px;
+  right: 20px;
+  background: rgba(110, 42, 255, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+  z-index: 1000;
+  border: none;
+}
+
+#flip-camera-btn:hover {
+  background: rgba(148, 98, 255, 0.9);
 }
 
 .local-video {
@@ -74,7 +93,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 80vh; /* Reduces height slightly to leave room for other elements */
+  height: 80vh;
   padding: 20px 0;
 }
 
@@ -85,11 +104,14 @@ body {
   border-radius: 10px;
 }
 
-#localVideo,
 #remoteVideo {
-  transform: scaleX(-1); /* Correct any horizontal inversion */
+  transform: scaleX(-1); /* Remote video always mirrored for front camera */
 }
 
+/* Local video transform will be handled by JavaScript */
+#localVideo {
+  transition: transform 0.2s ease-in-out; /* Smooth transition when flipping */
+}
 
 .user-item {
   display: inline-flex;
@@ -116,7 +138,7 @@ body {
 
 #userId {
   display: block;
-  margin-bottom: 10px; /* Ensure there's space between this and the call text */
+  margin-bottom: 10px;
 }
 
 /* Mobile and tablets (up to 720px) */
@@ -137,7 +159,7 @@ body {
   }
 
   .remote-video {
-    height: 85vh; /* Reduce to make room for user ID and call button */
+    height: 85vh;
   }
 
   #remoteVideo {
@@ -162,5 +184,9 @@ body {
     width: 90%;
     height: auto;
     object-fit: contain;
+  }
+
+  #flip-camera-btn {
+    display: none;
   }
 }
